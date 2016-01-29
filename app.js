@@ -1,20 +1,31 @@
 var express = require("express");
 var app = express();
 
+var bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
+
+
 var request = require('request');
 
 
 app.get("/", function(req, res) {
+	res.send("Hello World!");
+});
+ 
+app.post("/groupme", function(req, res) {
 	// res.send("Hello World!");
-	console.log(req.group_id);
 	
-	if(req.group_id) {
+	if(req.body.group_id) {
+
+		console.log("group stage passed");
 		// duck typing.  probably from groupme
 		// check that boxbot was mentioned
-		var msg = req.text;
-		var re = /@boxbot-test/g;
+		var msg = req.body.text;
+		var re = /.*@boxbot-test.*/g;
 
 		if(re.test(msg)) {
+			console.log("regex passed");	
 			var headers = {
 				'Content-Type': 'application/json'
 			};

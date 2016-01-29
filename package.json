@@ -4,13 +4,14 @@
   "description": "Groupme bot designed for sass. A lot of sass.",
   "main": "index.js",
   "scripts": {
-   	"start": "node app.js",
-	"test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": "https://github.com/abertrand13/boxbot-test",
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.14.2",
     "express": "^4.13.4",
     "request": "^2.69.0"
   }
