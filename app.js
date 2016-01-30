@@ -9,7 +9,7 @@ var request = require('request');
 
 app.set('port', (process.env.PORT || 3000));
 
-var botKey = "4b1e5390aee0326d4190116e44";
+var botKey = "";
 
 app.get("/", function(req, res) {
 	res.send("Hello World!");
@@ -18,12 +18,20 @@ app.get("/", function(req, res) {
 app.post("/groupme", function(req, res) {
 	// res.send("Hello World!");
 	
-	if(req.body.group_id) {
+	if(req.body.group_id == "19400360") {
+		// Testing grounds
+		botKey = "4b1e5390aee0326d4190116e44";
+	} else if(req.body.group_id == "14058998") {
+		// production	
+		botKey = "5865d42826ed1b4518bc6393d6";
+	}
+	
+	if(botKey) {
 
 		// duck typing.  probably from groupme
 		// check that boxbot was mentioned
 		var msg = req.body.text;
-		var re = /.*@boxbot-test.*/g;
+		var re = /.*@boxbot.*/g;
 
 		if(re.test(msg)) {
 			
@@ -50,11 +58,11 @@ app.post("/groupme", function(req, res) {
 					'func' : brendan
 				},
 				{
-					'regex' : /.*BRONTUS.*/g,
+					'regex' : /.*[bB][rR][oO][nN][tT][uU][sS].*/g,
 					'func' : goteem
 				},
 				{
-					'regex' : /.*got h*e+m.*/g,
+					'regex' : /.*[gG]+[oO]+[tT]+ [hH]*[eE]+[mM]+.*/g,
 					'func' : goteem
 				},
 				{
