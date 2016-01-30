@@ -7,8 +7,11 @@
     "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "engines": {
+	  "node": "5.4.1"
+  },
   "repository": "https://github.com/abertrand13/boxbot-test",
-  "author": "",
+  "author": "Alex Bertrand",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.14.2",
