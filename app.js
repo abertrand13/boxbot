@@ -26,7 +26,7 @@ app.post("/groupme", function(req, res) {
 		botKey = "5865d42826ed1b4518bc6393d6";
 	}
 	
-	if(botKey) {
+	if(botKey && req.body.name != "boxbot") {
 
 		// duck typing.  probably from groupme
 		// check that boxbot was mentioned
