@@ -9,10 +9,12 @@ var request = require('request');
 
 app.set('port', (process.env.PORT || 3000));
 
+var botKey = "4b1e5390aee0326d4190116e44";
+
 app.get("/", function(req, res) {
 	res.send("Hello World!");
 });
- 
+
 app.post("/groupme", function(req, res) {
 	// res.send("Hello World!");
 	
@@ -65,12 +67,19 @@ app.post("/groupme", function(req, res) {
 				}
 			];
 
+			var exec = false;
+
 			for(var i = 0; i < functionalityMap.length; i++) {
 				var entry = functionalityMap[i];
 				if(entry.regex.test(msg)) {
+					exec = true;	
 					entry.func(msg);
 				}
-			}			
+			}
+
+			if(!exec) {
+				defaultResponse(msg);
+			}
 		}
 	}
 
@@ -80,6 +89,32 @@ app.post("/groupme", function(req, res) {
 app.listen(app.get('port'), function() {
 	console.log("Example app listening on port " + app.get('port') + "!");
 });
+
+var defaultResponse = function(msg) {
+		
+	var headers = {
+		'Content-Type': 'application/json'
+	};
+
+	var options = {
+		url		: 'https://api.groupme.com/v3/bots/post',
+		method	: 'POST',
+		headers	: headers,
+		form: {
+			bot_id	: botKey,
+			text	: 'Sorry, not quite sure what to make of that...'
+		}
+	}
+
+	request(options, function(error, response, body) {
+		if(error) {
+			console.log(error);
+		}
+		if(!error && response.statusCode == 200) {
+			console.log(body);
+		}
+	});
+}
 
 var testing = function(msg) {
 	
@@ -92,7 +127,7 @@ var testing = function(msg) {
 		method	: 'POST',
 		headers	: headers,
 		form: {
-			bot_id	: '4b1e5390aee0326d4190116e44',
+			bot_id	: botKey,
 			text	: 'Testing complete.  I am operational.'
 		}
 	}
@@ -117,7 +152,7 @@ var intro = function(msg) {
 		method	: 'POST',
 		headers	: headers,
 		form : {
-			bot_id	: '4b1e5390aee0326d4190116e44',
+			bot_id	: botKey,
 			text	: 'introducing...'
 		}
 	};
@@ -153,7 +188,7 @@ var coinflip = function(msg) {
 		method	: 'POST',
 		headers	: headers,
 		form: {
-			bot_id	: '4b1e5390aee0326d4190116e44',
+			bot_id	: botKey,
 			text	: cointext
 		}
 	}
@@ -179,7 +214,7 @@ var derp = function(msg) {
 		method	: 'POST',
 		headers	: headers,
 		body : JSON.stringify({
-			"bot_id" : "4b1e5390aee0326d4190116e44",
+			"bot_id" : botKey,
 			"text"	: "classic.",
 			"attachments" : [
 				{
@@ -211,7 +246,7 @@ var brendan = function(msg) {
 		method	: 'POST',
 		headers	: headers,
 		body : JSON.stringify({
-			"bot_id" : "4b1e5390aee0326d4190116e44",
+			"bot_id" : botKey,
 			"text"	: "classic.",
 			"attachments" : [
 				{
@@ -242,7 +277,7 @@ var goteem = function(msg) {
 		method	: 'POST',
 		headers	: headers,
 		body : JSON.stringify({
-			"bot_id" : "4b1e5390aee0326d4190116e44",
+			"bot_id" : botKey,
 			"text"	: "classic.",
 			"attachments" : [
 				{
@@ -306,7 +341,7 @@ var diningHall = function(msg) {
 		method	: 'POST',
 		headers	: headers,
 		form : {
-			"bot_id" : "4b1e5390aee0326d4190116e44",
+			"bot_id" : botKey,
 			"text"	: choice,	
 		}
 	}
@@ -336,7 +371,7 @@ var odds = function(msg) {
 		method	: 'POST',
 		headers	: headers,
 		form: {
-			bot_id	: '4b1e5390aee0326d4190116e44',
+			bot_id	: botKey,
 			text	: num
 		}
 	}
