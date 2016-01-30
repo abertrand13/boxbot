@@ -89,14 +89,14 @@ var testing = function() {
 
 var intro = function() {
 	var headers = {
-		'Content-Type': 'applications/json'
+		'Content-Type': 'application/json'
 	};
 
 	var options = {
 		url		: 'https://api.groupme.com/v3/bots/post',
 		method	: 'POST',
 		headers	: headers,
-		form: {
+		form : {
 			bot_id	: '4b1e5390aee0326d4190116e44',
 			text	: 'introducing...'
 		}
@@ -153,20 +153,21 @@ var derp = function() {
 		'Content-Type': 'application/json'
 	};
 
+	// why do I have to do this json stringify shit?  unclear.  But whatever.  It works!!	
 	var options = {
 		url		: 'https://api.groupme.com/v3/bots/post',
 		method	: 'POST',
 		headers	: headers,
-		form: {
-			bot_id	: '4b1e5390aee0326d4190116e44',
-			text	: 'classic.',
-			attachments : [
+		body : JSON.stringify({
+			"bot_id" : "4b1e5390aee0326d4190116e44",
+			"text"	: "classic.",
+			"attachments" : [
 				{
-					type : "image",
-					url : "https://i.groupme.com/852x1136.jpeg.bbd3d55ff61d41cb95be23b0873599ab"
+					"type" : "image",
+					"url" : "https://i.groupme.com/852x1136.jpeg.bbd3d55ff61d41cb95be23b0873599ab.large"
 				}
 			]
-		}
+		})
 	}
 
 	request(options, function(error, response, body) {
