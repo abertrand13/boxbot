@@ -5,9 +5,9 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
-
 var request = require('request');
 
+app.set('port', (process.env.PORT || 3000));
 
 app.get("/", function(req, res) {
 	res.send("Hello World!");
