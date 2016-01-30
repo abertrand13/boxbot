@@ -48,6 +48,14 @@ app.post("/groupme", function(req, res) {
 					'func' : brendan
 				},
 				{
+					'regex' : /.*BRONTUS.*/g,
+					'func' : goteem
+				},
+				{
+					'regex' : /.*got h*e+m.*/g,
+					'func' : goteem
+				},
+				{
 					'regex' : /.*dining hall.*/g,
 					'func' : diningHall
 				},
@@ -198,7 +206,6 @@ var brendan = function(msg) {
 		'Content-Type': 'application/json'
 	};
 
-	// why do I have to do this json stringify shit?  unclear.  But whatever.  It works!!	
 	var options = {
 		url		: 'https://api.groupme.com/v3/bots/post',
 		method	: 'POST',
@@ -210,6 +217,37 @@ var brendan = function(msg) {
 				{
 					"type" : "image",
 					"url" : "https://i.groupme.com/720x960.jpeg.e6e2573aafdd4189accd061a54b3f6a4" 
+				}
+			]
+		})
+	}
+
+	request(options, function(error, response, body) {
+		if(error) {
+			console.log(error);
+		}
+		if(!error && response.statusCode == 200) {
+			console.log(body);
+		}
+	});
+}
+
+var goteem = function(msg) {	
+	var headers = {
+		'Content-Type': 'application/json'
+	};
+
+	var options = {
+		url		: 'https://api.groupme.com/v3/bots/post',
+		method	: 'POST',
+		headers	: headers,
+		body : JSON.stringify({
+			"bot_id" : "4b1e5390aee0326d4190116e44",
+			"text"	: "classic.",
+			"attachments" : [
+				{
+					"type" : "image",
+					"url" : "https://i.groupme.com/918x1224.jpeg.a32a941c2db24292b655a46de6d8345e"
 				}
 			]
 		})
