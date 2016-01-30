@@ -44,6 +44,10 @@ app.post("/groupme", function(req, res) {
 					'func' : derp
 				},
 				{
+					'regex' : /.*brendan.*/g,
+					'func' : brendan
+				},
+				{
 					'regex' : /.*dining hall.*/g,
 					'func' : diningHall
 				}
@@ -169,6 +173,39 @@ var derp = function() {
 				{
 					"type" : "image",
 					"url" : "https://i.groupme.com/852x1136.jpeg.bbd3d55ff61d41cb95be23b0873599ab.large"
+				}
+			]
+		})
+	}
+
+	request(options, function(error, response, body) {
+		if(error) {
+			console.log(error);
+		}
+		if(!error && response.statusCode == 200) {
+			console.log(body);
+		}
+	});
+}
+
+var brendan = function() {
+	
+	var headers = {
+		'Content-Type': 'application/json'
+	};
+
+	// why do I have to do this json stringify shit?  unclear.  But whatever.  It works!!	
+	var options = {
+		url		: 'https://api.groupme.com/v3/bots/post',
+		method	: 'POST',
+		headers	: headers,
+		body : JSON.stringify({
+			"bot_id" : "4b1e5390aee0326d4190116e44",
+			"text"	: "classic.",
+			"attachments" : [
+				{
+					"type" : "image",
+					"url" : "https://i.groupme.com/720x960.jpeg.e6e2573aafdd4189accd061a54b3f6a4" 
 				}
 			]
 		})
