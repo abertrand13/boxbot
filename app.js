@@ -50,13 +50,17 @@ app.post("/groupme", function(req, res) {
 				{
 					'regex' : /.*dining hall.*/g,
 					'func' : diningHall
+				},
+				{
+					'regex' : /.*odds 1 in (\d+).*/g,
+					'func' : odds
 				}
 			];
 
 			for(var i = 0; i < functionalityMap.length; i++) {
 				var entry = functionalityMap[i];
 				if(entry.regex.test(msg)) {
-					entry.func();
+					entry.func(msg);
 				}
 			}			
 		}
@@ -69,7 +73,7 @@ app.listen(app.get('port'), function() {
 	console.log("Example app listening on port " + app.get('port') + "!");
 });
 
-var testing = function() {
+var testing = function(msg) {
 	
 	var headers = {
 		'Content-Type': 'application/json'
@@ -95,7 +99,7 @@ var testing = function() {
 	});
 }
 
-var intro = function() {
+var intro = function(msg) {
 	var headers = {
 		'Content-Type': 'application/json'
 	};
@@ -129,7 +133,7 @@ var intro = function() {
 		
 }
 
-var coinflip = function() {	
+var coinflip = function(msg) {	
 	var headers = {
 		'Content-Type': 'application/json'
 	};
@@ -156,7 +160,7 @@ var coinflip = function() {
 	});
 }
 
-var derp = function() {	
+var derp = function(msg) {	
 	var headers = {
 		'Content-Type': 'application/json'
 	};
@@ -188,7 +192,7 @@ var derp = function() {
 	});
 }
 
-var brendan = function() {
+var brendan = function(msg) {
 	
 	var headers = {
 		'Content-Type': 'application/json'
@@ -221,7 +225,7 @@ var brendan = function() {
 	});
 }
 
-var diningHall = function() {	
+var diningHall = function(msg) {	
 	var headers = {
 		'Content-Type': 'application/json'
 	};
@@ -266,6 +270,36 @@ var diningHall = function() {
 		form : {
 			"bot_id" : "4b1e5390aee0326d4190116e44",
 			"text"	: choice,	
+		}
+	}
+
+	request(options, function(error, response, body) {
+		if(error) {
+			console.log(error);
+		}
+		if(!error && response.statusCode == 200) {
+			console.log(body);
+		}
+	});
+}
+
+var odds = function(msg) {
+	var regex = /.*odds 1 in (\d+).*/g
+	var result = regex.exec(msg);
+	var bound = parseInt(result[1]);
+	var num = Math.floor(Math.random() * bound) + 1;
+	
+	var headers = {
+		'Content-Type': 'application/json'
+	};
+
+	var options = {
+		url		: 'https://api.groupme.com/v3/bots/post',
+		method	: 'POST',
+		headers	: headers,
+		form: {
+			bot_id	: '4b1e5390aee0326d4190116e44',
+			text	: num
 		}
 	}
 
