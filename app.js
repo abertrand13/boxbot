@@ -40,8 +40,12 @@ app.post("/groupme", function(req, res) {
 					'func' : coinflip
 				},
 				{
-					'regex' : /.*classic derp.*/g,
+					'regex' : /.*derp.*/g,
 					'func' : derp
+				},
+				{
+					'regex' : /.*dining hall.*/g,
+					'func' : diningHall
 				}
 			];
 
@@ -168,6 +172,64 @@ var derp = function() {
 				}
 			]
 		})
+	}
+
+	request(options, function(error, response, body) {
+		if(error) {
+			console.log(error);
+		}
+		if(!error && response.statusCode == 200) {
+			console.log(body);
+		}
+	});
+}
+
+var diningHall = function() {	
+	var headers = {
+		'Content-Type': 'application/json'
+	};
+
+	var rand = Math.floor(Math.random() * 7);
+
+	var choice;
+	switch(rand) {
+		case 0:
+			choice = "Ricker";
+			break;
+
+		case 1:
+			choice = "Stern";
+			break;
+
+		case 2:
+			choice = "Wilbur";
+			break;
+
+		case 3:
+			choice = "Arrillaga";
+			break;
+
+		case 4:
+			choice = "Lag";
+			break;
+
+		case 5:
+			choice = "Manz";
+			break;
+
+		case 6:
+			choice = "FloMo";
+			break;
+	}
+
+	var options = {
+		url		: 'https://api.groupme.com/v3/bots/post',
+		method	: 'POST',
+		headers	: headers,
+		form : {
+			"bot_id" : "4b1e5390aee0326d4190116e44",
+			"text"	: choice,	
+		}
 	}
 
 	request(options, function(error, response, body) {
