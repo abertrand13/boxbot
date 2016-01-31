@@ -33,8 +33,7 @@ app.post("/groupme", function(req, res) {
 		var msg = req.body.text;
 		var re = /.*@boxbot.*/g;
 
-		if(re.test(msg)) {
-			
+		if(re.test(msg)) { 
 			// define a map of filters and functionality
 			var functionalityMap = [
 				{
@@ -66,12 +65,20 @@ app.post("/groupme", function(req, res) {
 					'func' : goteem
 				},
 				{
+					'regex' : /.*([jJ]+[oO]+[rR]+[dD]+[aA]+[nN]+)|([nN]+[eE]+[rR]+[dD]+).*/g,
+					'func' : jordan
+				},
+				{
 					'regex' : /.*dining hall.*/g,
 					'func' : diningHall
 				},
 				{
 					'regex' : /.*odds 1 in (\d+).*/g,
 					'func' : odds
+				},
+				{
+					'regex' : /.*beer.*\?.*/g,
+					'func' : beer
 				}
 			];
 
@@ -306,6 +313,38 @@ var goteem = function(msg) {
 	});
 }
 
+
+var jordan = function(msg) {	
+	var headers = {
+		'Content-Type': 'application/json'
+	};
+
+	var options = {
+		url		: 'https://api.groupme.com/v3/bots/post',
+		method	: 'POST',
+		headers	: headers,
+		body : JSON.stringify({
+			"bot_id" : botKey,
+			"text"	: "classic.",
+			"attachments" : [
+				{
+					"type" : "image",
+					"url" : "https://i.groupme.com/1095x1230.jpeg.0e8ba712118a461da077f7d74612e216"
+				}
+			]
+		})
+	}
+
+	request(options, function(error, response, body) {
+		if(error) {
+			console.log(error);
+		}
+		if(!error && response.statusCode == 200) {
+			console.log(body);
+		}
+	});
+}
+
 var diningHall = function(msg) {	
 	var headers = {
 		'Content-Type': 'application/json'
@@ -381,6 +420,49 @@ var odds = function(msg) {
 		form: {
 			bot_id	: botKey,
 			text	: num
+		}
+	}
+
+	request(options, function(error, response, body) {
+		if(error) {
+			console.log(error);
+		}
+		if(!error && response.statusCode == 200) {
+			console.log(body);
+		}
+	});
+}
+
+var beer = function(msg) {	
+	var headers = {
+		'Content-Type': 'application/json'
+	};
+
+	var beers = [
+		"Corona",
+		"Blue Moon",
+		"Sculpin",
+		"Natty Light",
+		"Sierra",
+		"Pacifico",
+		"Modelo",
+		"Fat Tire",
+		"Lagunitas",
+		"The nearest IPA to your face.",
+		"Heineken",
+		"Shock Top"
+	]
+	var rand = Math.floor(Math.random() * beers.length);
+
+	var choice = beers[rand];	
+
+	var options = {
+		url		: 'https://api.groupme.com/v3/bots/post',
+		method	: 'POST',
+		headers	: headers,
+		form : {
+			"bot_id" : botKey,
+			"text"	: choice,	
 		}
 	}
 
