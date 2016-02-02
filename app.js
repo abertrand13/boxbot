@@ -79,6 +79,10 @@ app.post("/groupme", function(req, res) {
 				{
 					'regex' : /.*beer.*\?.*/g,
 					'func' : beer
+				},
+				{
+					'regex' : /.*[Oo] ?[rR][lL]+[yY].*/g,
+					'func' : orly
 				}
 			];
 
@@ -464,6 +468,37 @@ var beer = function(msg) {
 			"bot_id" : botKey,
 			"text"	: choice,	
 		}
+	}
+
+	request(options, function(error, response, body) {
+		if(error) {
+			console.log(error);
+		}
+		if(!error && response.statusCode == 200) {
+			console.log(body);
+		}
+	});
+}
+
+var orly = function(msg) {
+	
+	var headers = {
+		'Content-Type': 'application/json'
+	};
+
+	var options = {
+		url		: 'https://api.groupme.com/v3/bots/post',
+		method	: 'POST',
+		headers	: headers,
+		body : JSON.stringify({
+			"bot_id" : botKey,
+			"attachments" : [
+				{
+					"type" : "image",
+					"url" : "https://i.groupme.com/480x360.jpeg.028247499b06466893165608fa56363f"
+				}
+			]
+		})
 	}
 
 	request(options, function(error, response, body) {
