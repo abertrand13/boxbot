@@ -83,6 +83,10 @@ app.post("/groupme", function(req, res) {
 				{
 					'regex' : /.*[Oo] ?[rR][lL]+[yY].*/g,
 					'func' : orly
+				},
+				{
+					'regex' : /([\S]+)((\+\+)|(--))/g,
+					'func' : karma
 				}
 			];
 
@@ -498,6 +502,46 @@ var orly = function(msg) {
 					"url" : "https://i.groupme.com/480x360.jpeg.028247499b06466893165608fa56363f"
 				}
 			]
+		})
+	}
+
+	request(options, function(error, response, body) {
+		if(error) {
+			console.log(error);
+		}
+		if(!error && response.statusCode == 200) {
+			console.log(body);
+		}
+	});
+}
+
+var karma = function(msg) {
+
+	var plus = /([\S]+)\+\+/g;
+	var minus = /([\S]+)--/g;
+
+	var obj, inc;
+
+	if(result = plus.exec(msg)) {
+		inc = 1;
+		obj = result[1];
+
+	} else if(result = minus.exec(msg)) {
+		obj = result[1];
+		inc = -1;
+	}
+
+	var headers = {
+		'Content-Type': 'application/json'
+	};
+
+	var options = {
+		url		: 'https://api.groupme.com/v3/bots/post',
+		method	: 'POST',
+		headers	: headers,
+		body : JSON.stringify({
+			"bot_id" : botKey,
+			"text"	: obj + "'s karma has " + (inc > 0 ? "increased" : "decreased") + " by " + Math.abs(inc).toString(),
 		})
 	}
 
