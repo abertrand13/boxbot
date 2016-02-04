@@ -6,6 +6,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
 var request = require('request');
+var pg = require('pg');
 
 app.set('port', (process.env.PORT || 3000));
 
@@ -49,24 +50,28 @@ app.post("/groupme", function(req, res) {
 					'func' : coinflip
 				},
 				{
-					'regex' : /.*derp.*/g,
+					'regex' : /.*derp(?![+-]).*/g,
 					'func' : derp
 				},
 				{
-					'regex' : /.*brendan.*/g,
+					'regex' : /.*brendan(?![+-]).*/g,
 					'func' : brendan
 				},
 				{
-					'regex' : /.*[bB][rR][oO][nN][tT][uU][sS].*/g,
+					'regex' : /.*[bB][rR][oO][nN][tT][uU][sS](?![+-]).*/g,
 					'func' : goteem
 				},
 				{
-					'regex' : /.*[gG]+[oO]+[tT]+ [hH]*[eE]+[mM]+.*/g,
+					'regex' : /.*[gG]+[oO]+[tT]+ [hH]*[eE]+[mM]+(?![+-]).*/g,
 					'func' : goteem
 				},
 				{
-					'regex' : /.*([jJ]+[oO]+[rR]+[dD]+[aA]+[nN]+)|([nN]+[eE]+[rR]+[dD]+).*/g,
+					'regex' : /.*([jJ]+[oO]+[rR]+[dD]+[aA]+[nN]+)|([nN]+[eE]+[rR]+[dD]+)(?![+-]).*/g,
 					'func' : jordan
+				},
+				{
+					'regex' : /.*[jJ][eE][nN]+[aA]?[yY]+(?![+-]).*/g,
+					'func' : jenny
 				},
 				{
 					'regex' : /.*dining hall.*/g,
@@ -353,6 +358,38 @@ var jordan = function(msg) {
 	});
 }
 
+
+var jenny = function(msg) {	
+	var headers = {
+		'Content-Type': 'application/json'
+	};
+
+	var options = {
+		url		: 'https://api.groupme.com/v3/bots/post',
+		method	: 'POST',
+		headers	: headers,
+		body : JSON.stringify({
+			"bot_id" : botKey,
+			"text"	: "classic.",
+			"attachments" : [
+				{
+					"type" : "image",
+					"url" : "https://i.groupme.com/720x960.jpeg.78e1eb1cccc94fa1879f5d29d7a6961e"
+				}
+			]
+		})
+	}
+
+	request(options, function(error, response, body) {
+		if(error) {
+			console.log(error);
+		}
+		if(!error && response.statusCode == 200) {
+			console.log(body);
+		}
+	});
+}
+
 var diningHall = function(msg) {	
 	var headers = {
 		'Content-Type': 'application/json'
@@ -531,26 +568,58 @@ var karma = function(msg) {
 		inc = -1;
 	}
 
-	var headers = {
-		'Content-Type': 'application/json'
-	};
+	var finalVal = inc; // assuming that we're going to have to create the row
 
-	var options = {
-		url		: 'https://api.groupme.com/v3/bots/post',
-		method	: 'POST',
-		headers	: headers,
-		body : JSON.stringify({
-			"bot_id" : botKey,
-			"text"	: obj + "'s karma has " + (inc > 0 ? "increased" : "decreased") + " by " + Math.abs(inc).toString(),
-		})
-	}
+	// Connect to database
+	pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client) {
+		if (err) {
+			throw err;
+		}
+		
+		var createRow = false;
 
-	request(options, function(error, response, body) {
-		if(error) {
-			console.log(error);
-		}
-		if(!error && response.statusCode == 200) {
-			console.log(body);
-		}
+		client.query("UPDATE karma SET karma=karma+" + inc + " WHERE name='" + obj + "' RETURNING name, karma", function(err, res) {
+			
+			if(err || res.rowCount == 0) { // truthiness
+				// we need to create the entry
+				client.query("INSERT INTO karma (name, karma) VALUES ('" + obj + "'," + inc + ")", function(err, res) {
+					if(err) throw err;
+					sendMsg();
+				});
+			} else {
+				// entry has been updated
+				finalVal = res.rows[0].karma;
+				sendMsg();
+			}
+		});	
 	});
+
+	// now send the proper message
+	// this hack right here is THE WORST.
+	// but javascript lets me do it, so...
+	// ^ lol worst reasoning EVAR.
+	var sendMsg = function() {
+		var headers = {
+			'Content-Type': 'application/json'
+		};
+
+		var options = {
+			url		: 'https://api.groupme.com/v3/bots/post',
+			method	: 'POST',
+			headers	: headers,
+			body : JSON.stringify({
+				"bot_id" : botKey,
+				"text"	: obj + "'s karma has " + (inc > 0 ? "increased" : "decreased") + " to " + finalVal.toString(),
+			})
+		}
+
+		request(options, function(error, response, body) {
+			if(error) {
+				console.log(error);
+			}
+			if(!error && response.statusCode == 200) {
+				console.log(body);
+			}
+		});
+	}
 }
