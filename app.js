@@ -90,8 +90,20 @@ app.post("/groupme", function(req, res) {
 					'func' : orly
 				},
 				{
-					'regex' : /([\S]+)((\+\+)|(--))/g,
+					'regex' : /.*([\S]+)((\+\+)|(--)).*/g,
 					'func' : karma
+				},
+				{
+					'regex' : /.*[wW][hH][oO] [iI][sS] [cC][hH][aA][mM][pP]\?*.*/g,
+					'func' : champ
+				},
+				{
+					'regex' : /.*[dD][rR][aA][mM][aA].*/g,
+					'func' : drama
+				},
+				{
+					'regex' : /.*weather.*/g,
+					'func' : weather
 				}
 			];
 
@@ -622,4 +634,101 @@ var karma = function(msg) {
 			}
 		});
 	}
+}
+
+var champ = function(msg) {
+	
+	var headers = {
+		'Content-Type': 'application/json'
+	};
+
+	var options = {
+		url		: 'https://api.groupme.com/v3/bots/post',
+		method	: 'POST',
+		headers	: headers,
+		body : JSON.stringify({
+			"bot_id" : botKey,
+			"text" : 'THAT QUESTION WILL BE ANSWERED THIS SUNDAY NIGHT...'
+		})
+	}
+
+	request(options, function(error, response, body) {
+		if(error) {
+			console.log(error);
+		}
+		if(!error && response.statusCode == 200) {
+			console.log(body);
+		}
+	});
+}
+
+var drama = function(msg) {
+	
+	var headers = {
+		'Content-Type': 'application/json'
+	};
+
+	var options = {
+		url		: 'https://api.groupme.com/v3/bots/post',
+		method	: 'POST',
+		headers	: headers,
+		body : JSON.stringify({
+			"bot_id" : botKey,
+			"attachments" : [
+				{
+					"type" : "image",
+					"url" : "https://i.groupme.com/300x200.gif.66b5a6cbe2d44194858cf88cf6471963"
+				}
+			]
+		})
+	}
+
+	request(options, function(error, response, body) {
+		if(error) {
+			console.log(error);
+		}
+		if(!error && response.statusCode == 200) {
+			console.log(body);
+		}
+	});
+}
+
+var weather = function(msg) {
+	var key = process.env.WUNDERGROUND_KEY;
+
+	request('http://api.wunderground.com/api/' + key + '/conditions/q/94305.json', function(err, res, body) {
+		
+		// TO HELL WITH ERROR CHECKING!
+
+		// console.log(JSON.stringify(JSON.parse(body)));
+		var data = JSON.parse(body);
+		var weather = data.current_observation.weather;
+		var temp = data.current_observation.temp_f;
+		var feel = data.current_observation.feelslike_f;
+
+		// now for text output.  TAB CREEP LET'S GO
+
+		var headers = {
+			'Content-Type': 'application/json'
+		};
+
+		var options = {
+			url		: 'https://api.groupme.com/v3/bots/post',
+			method	: 'POST',
+			headers	: headers,
+			form: {
+				bot_id	: botKey,
+				text	: "It's " + temp.toString() + " degrees and " + weather + ". It feels like " + feel.toString() + ".  Also, I'm contractually obligated to tell you that this weather data comes from Weather Underground."
+			}
+		}
+
+		request(options, function(error, response, body) {
+			if(error) {
+				console.log(error);
+			}
+			if(!error && response.statusCode == 200) {
+				console.log(body);
+			}
+		});
+	});
 }
