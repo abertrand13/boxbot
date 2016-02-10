@@ -58,6 +58,10 @@ app.post("/groupme", function(req, res) {
 					'func' : brendan
 				},
 				{
+					'regex' : /.*[tT][rR][iI][pP][lL][eE](?![+-]).*/g,
+					'func' : triple
+				},
+				{
 					'regex' : /.*[bB][rR][oO][nN][tT][uU][sS](?![+-]).*/g,
 					'func' : goteem
 				},
@@ -292,6 +296,38 @@ var brendan = function(msg) {
 				{
 					"type" : "image",
 					"url" : "https://i.groupme.com/720x960.jpeg.e6e2573aafdd4189accd061a54b3f6a4" 
+				}
+			]
+		})
+	}
+
+	request(options, function(error, response, body) {
+		if(error) {
+			console.log(error);
+		}
+		if(!error && response.statusCode == 200) {
+			console.log(body);
+		}
+	});
+}
+
+var triple = function(msg) {
+	
+	var headers = {
+		'Content-Type': 'application/json'
+	};
+
+	var options = {
+		url		: 'https://api.groupme.com/v3/bots/post',
+		method	: 'POST',
+		headers	: headers,
+		body : JSON.stringify({
+			"bot_id" : botKey,
+			"text"	: "classic.",
+			"attachments" : [
+				{
+					"type" : "image",
+					"url" : "https://i.groupme.com/356x473.png.97f5d5e48a6048ecaf6270e6aeb9eb2f"
 				}
 			]
 		})
