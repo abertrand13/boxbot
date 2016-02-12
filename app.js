@@ -7,6 +7,8 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 var request = require('request');
 var pg = require('pg');
+var jquery = require('jquery');
+var extend = require('extend');
 
 app.set('port', (process.env.PORT || 3000));
 
@@ -21,10 +23,10 @@ app.post("/groupme", function(req, res) {
 	
 	if(req.body.group_id == "19400360") {
 		// Testing grounds
-		botKey = "4b1e5390aee0326d4190116e44";
+		botKey = process.env.TEST_BOT_KEY;
 	} else if(req.body.group_id == "14058998") {
 		// production	
-		botKey = "5865d42826ed1b4518bc6393d6";
+		botKey = process.env.PROD_BOT_KEY;
 	}
 	
 	if(botKey && req.body.name != "boxbot") {
@@ -94,6 +96,10 @@ app.post("/groupme", function(req, res) {
 					'func' : orly
 				},
 				{
+					'regex' : /.*[oO] ?[rR][lL]+[mM][eE][nN][tT][eE].*/g,
+					'func' : orlmente
+				},
+				{
 					'regex' : /.*([\S]+)((\+\+)|(--)).*/g,
 					'func' : karma
 				},
@@ -134,22 +140,33 @@ app.listen(app.get('port'), function() {
 	console.log("Example app listening on port " + app.get('port') + "!");
 });
 
-var defaultResponse = function(msg) {
-		
-	var headers = {
-		'Content-Type': 'application/json'
-	};
+var headersTemplate = {
+	'Content-Type' : 'application/json'	
+}
 
-	var options = {
-		url		: 'https://api.groupme.com/v3/bots/post',
-		method	: 'POST',
-		headers	: headers,
-		form: {
-			bot_id	: botKey,
-			text	: 'Sorry, not quite sure what to make of that...'
-		}
+var optionsTemplate = {
+	url		: 'https://api.groupme.com/v3/bots/post',
+	method	: 'POST',
+	headers : headersTemplate,
+	form : {}
+}
+
+function makeImageBody(text, url) {
+	var body = {		
+		"bot_id" : botKey,
+		"text"	: text,
+		"attachments" : [
+			{
+				"type" : "image",
+				"url" : url
+			}
+		]
 	}
 
+	return JSON.stringify(body);
+}
+
+function issueRequest(options) {
 	request(options, function(error, response, body) {
 		if(error) {
 			console.log(error);
@@ -160,33 +177,23 @@ var defaultResponse = function(msg) {
 	});
 }
 
-var testing = function(msg) {
-	
-	var headers = {
-		'Content-Type': 'application/json'
-	};
+var defaultResponse = function(msg) {		
+	var options = extend(true, {}, optionsTemplate);
+	options.form.bot_id = botKey;
+	options.form.text = "Sorry, not quite sure what to make of that...";
+	issueRequest(options);	
+}
 
-	var options = {
-		url		: 'https://api.groupme.com/v3/bots/post',
-		method	: 'POST',
-		headers	: headers,
-		form: {
-			bot_id	: botKey,
-			text	: 'Testing complete.  I am operational.'
-		}
-	}
-
-	request(options, function(error, response, body) {
-		if(error) {
-			console.log(error);
-		}
-		if(!error && response.statusCode == 200) {
-			console.log(body);
-		}
-	});
+var testing = function(msg) {		
+	var options = extend(true, {}, optionsTemplate);
+	options.form.bot_id = botKey;
+	options.form.text = "Testing complete.  I am operational.";
+	issueRequest(options);
 }
 
 var intro = function(msg) {
+	
+	// have to leave this one as it is because of the daisy chaining	
 	var headers = {
 		'Content-Type': 'application/json'
 	};
@@ -221,279 +228,83 @@ var intro = function(msg) {
 }
 
 var coinflip = function(msg) {	
-	var headers = {
-		'Content-Type': 'application/json'
-	};
-
-	var cointext = "Flipping... it's " + (Math.random() < .5 ? "HEADS!" : "TAILS!");
-
-	var options = {
-		url		: 'https://api.groupme.com/v3/bots/post',
-		method	: 'POST',
-		headers	: headers,
-		form: {
-			bot_id	: botKey,
-			text	: cointext
-		}
-	}
-
-	request(options, function(error, response, body) {
-		if(error) {
-			console.log(error);
-		}
-		if(!error && response.statusCode == 200) {
-			console.log(body);
-		}
-	});
-}
-
-var derp = function(msg) {	
-	var headers = {
-		'Content-Type': 'application/json'
-	};
-
-	// why do I have to do this json stringify shit?  unclear.  But whatever.  It works!!	
-	var options = {
-		url		: 'https://api.groupme.com/v3/bots/post',
-		method	: 'POST',
-		headers	: headers,
-		body : JSON.stringify({
-			"bot_id" : botKey,
-			"text"	: "classic.",
-			"attachments" : [
-				{
-					"type" : "image",
-					"url" : "https://i.groupme.com/852x1136.jpeg.bbd3d55ff61d41cb95be23b0873599ab.large"
-				}
-			]
-		})
-	}
-
-	request(options, function(error, response, body) {
-		if(error) {
-			console.log(error);
-		}
-		if(!error && response.statusCode == 200) {
-			console.log(body);
-		}
-	});
-}
-
-var brendan = function(msg) {
 	
-	var headers = {
-		'Content-Type': 'application/json'
-	};
+	var options = extend(true, {}, optionsTemplate);
+	options.form.bot_id = botKey;	
+	var cointext = "Flipping... it's " + (Math.random() < .5 ? "HEADS!" : "TAILS!");
+	options.form.text = cointext;
+	issueRequest(options);
+}
 
-	var options = {
-		url		: 'https://api.groupme.com/v3/bots/post',
-		method	: 'POST',
-		headers	: headers,
-		body : JSON.stringify({
-			"bot_id" : botKey,
-			"text"	: "classic.",
-			"attachments" : [
-				{
-					"type" : "image",
-					"url" : "https://i.groupme.com/720x960.jpeg.e6e2573aafdd4189accd061a54b3f6a4" 
-				}
-			]
-		})
-	}
+var derp = function(msg) {
 
-	request(options, function(error, response, body) {
-		if(error) {
-			console.log(error);
-		}
-		if(!error && response.statusCode == 200) {
-			console.log(body);
-		}
-	});
+	var options = extend(true, {}, optionsTemplate);
+	delete options.form;
+	options.body = makeImageBody("classic.", "https://i.groupme.com/852x1136.jpeg.bbd3d55ff61d41cb95be23b0873599ab.large");
+	issueRequest(options);
+}
+
+var brendan = function(msg) {	
+	
+	var options = extend(true, {}, optionsTemplate);
+	delete options.form;
+	options.body = makeImageBody("classic.", "https://i.groupme.com/720x960.jpeg.e6e2573aafdd4189accd061a54b3f6a4");
+	issueRequest(options);	
 }
 
 var triple = function(msg) {
-	
-	var headers = {
-		'Content-Type': 'application/json'
-	};
 
-	var options = {
-		url		: 'https://api.groupme.com/v3/bots/post',
-		method	: 'POST',
-		headers	: headers,
-		body : JSON.stringify({
-			"bot_id" : botKey,
-			"text"	: "classic.",
-			"attachments" : [
-				{
-					"type" : "image",
-					"url" : "https://i.groupme.com/356x473.png.97f5d5e48a6048ecaf6270e6aeb9eb2f"
-				}
-			]
-		})
-	}
-
-	request(options, function(error, response, body) {
-		if(error) {
-			console.log(error);
-		}
-		if(!error && response.statusCode == 200) {
-			console.log(body);
-		}
-	});
+	var options = extend(true, {}, optionsTemplate);
+	delete options.form;
+	options.body = makeImageBody("classic.", "https://i.groupme.com/356x473.png.97f5d5e48a6048ecaf6270e6aeb9eb2f");
+	issueRequest(options);
 }
 
 var goteem = function(msg) {	
-	var headers = {
-		'Content-Type': 'application/json'
-	};
-
-	var options = {
-		url		: 'https://api.groupme.com/v3/bots/post',
-		method	: 'POST',
-		headers	: headers,
-		body : JSON.stringify({
-			"bot_id" : botKey,
-			"text"	: "classic.",
-			"attachments" : [
-				{
-					"type" : "image",
-					"url" : "https://i.groupme.com/918x1224.jpeg.a32a941c2db24292b655a46de6d8345e"
-				}
-			]
-		})
-	}
-
-	request(options, function(error, response, body) {
-		if(error) {
-			console.log(error);
-		}
-		if(!error && response.statusCode == 200) {
-			console.log(body);
-		}
-	});
+		
+	var options = extend(true, {}, optionsTemplate);
+	delete options.form;
+	options.body = makeImageBody("classic.", "https://i.groupme.com/918x1224.jpeg.a32a941c2db24292b655a46de6d8345e");
+	issueRequest(options);
 }
 
 
 var jordan = function(msg) {	
-	var headers = {
-		'Content-Type': 'application/json'
-	};
-
-	var options = {
-		url		: 'https://api.groupme.com/v3/bots/post',
-		method	: 'POST',
-		headers	: headers,
-		body : JSON.stringify({
-			"bot_id" : botKey,
-			"text"	: "classic.",
-			"attachments" : [
-				{
-					"type" : "image",
-					"url" : "https://i.groupme.com/1095x1230.jpeg.0e8ba712118a461da077f7d74612e216"
-				}
-			]
-		})
-	}
-
-	request(options, function(error, response, body) {
-		if(error) {
-			console.log(error);
-		}
-		if(!error && response.statusCode == 200) {
-			console.log(body);
-		}
-	});
+	
+	var options = extend(true, {}, optionsTemplate);
+	delete options.form;
+	options.body = makeImageBody("classic.", "https://i.groupme.com/1095x1230.jpeg.0e8ba712118a461da077f7d74612e216");
+	issueRequest(options);	
 }
 
 
 var jenny = function(msg) {	
-	var headers = {
-		'Content-Type': 'application/json'
-	};
-
-	var options = {
-		url		: 'https://api.groupme.com/v3/bots/post',
-		method	: 'POST',
-		headers	: headers,
-		body : JSON.stringify({
-			"bot_id" : botKey,
-			"text"	: "classic.",
-			"attachments" : [
-				{
-					"type" : "image",
-					"url" : "https://i.groupme.com/720x960.jpeg.78e1eb1cccc94fa1879f5d29d7a6961e"
-				}
-			]
-		})
-	}
-
-	request(options, function(error, response, body) {
-		if(error) {
-			console.log(error);
-		}
-		if(!error && response.statusCode == 200) {
-			console.log(body);
-		}
-	});
+	
+	var options = extend(true, {}, optionsTemplate);
+	delete options.form;
+	options.body = makeImageBody("classic.", "https://i.groupme.com/720x960.jpeg.78e1eb1cccc94fa1879f5d29d7a6961e");
+	issueRequest(options);	
 }
 
 var diningHall = function(msg) {	
-	var headers = {
-		'Content-Type': 'application/json'
-	};
-
+	
+	var diningHalls = [
+		"Ricker",
+		"Stern",
+		"Wilbur",
+		"Arrillaga",
+		"Lag",
+		"Manz",
+		"FloMo"
+	];
 	var rand = Math.floor(Math.random() * 7);
 
-	var choice;
-	switch(rand) {
-		case 0:
-			choice = "Ricker";
-			break;
+	var choice = diningHalls[rand];
 
-		case 1:
-			choice = "Stern";
-			break;
-
-		case 2:
-			choice = "Wilbur";
-			break;
-
-		case 3:
-			choice = "Arrillaga";
-			break;
-
-		case 4:
-			choice = "Lag";
-			break;
-
-		case 5:
-			choice = "Manz";
-			break;
-
-		case 6:
-			choice = "FloMo";
-			break;
-	}
-
-	var options = {
-		url		: 'https://api.groupme.com/v3/bots/post',
-		method	: 'POST',
-		headers	: headers,
-		form : {
-			"bot_id" : botKey,
-			"text"	: choice,	
-		}
-	}
-
-	request(options, function(error, response, body) {
-		if(error) {
-			console.log(error);
-		}
-		if(!error && response.statusCode == 200) {
-			console.log(body);
-		}
-	});
+	var options = extend(true, {}, optionsTemplate);
+	options.form.bot_id = botKey;
+	options.form.text = choice;
+	issueRequest(options);
 }
 
 var odds = function(msg) {
@@ -502,34 +313,13 @@ var odds = function(msg) {
 	var bound = parseInt(result[1]);
 	var num = Math.floor(Math.random() * bound) + 1;
 	
-	var headers = {
-		'Content-Type': 'application/json'
-	};
-
-	var options = {
-		url		: 'https://api.groupme.com/v3/bots/post',
-		method	: 'POST',
-		headers	: headers,
-		form: {
-			bot_id	: botKey,
-			text	: num
-		}
-	}
-
-	request(options, function(error, response, body) {
-		if(error) {
-			console.log(error);
-		}
-		if(!error && response.statusCode == 200) {
-			console.log(body);
-		}
-	});
+	var options = extend(true, {}, optionsTemplate);
+	options.form.bot_id = botKey;
+	options.form.text = num;
+	issueRequest(options);
 }
 
 var beer = function(msg) {	
-	var headers = {
-		'Content-Type': 'application/json'
-	};
 
 	var beers = [
 		"Corona",
@@ -547,58 +337,31 @@ var beer = function(msg) {
 	]
 	var rand = Math.floor(Math.random() * beers.length);
 
-	var choice = beers[rand];	
+	var choice = beers[rand];
 
-	var options = {
-		url		: 'https://api.groupme.com/v3/bots/post',
-		method	: 'POST',
-		headers	: headers,
-		form : {
-			"bot_id" : botKey,
-			"text"	: choice,	
-		}
-	}
-
-	request(options, function(error, response, body) {
-		if(error) {
-			console.log(error);
-		}
-		if(!error && response.statusCode == 200) {
-			console.log(body);
-		}
-	});
+	var options = extend(true, {}, optionsTemplate);
+	options.form.bot_id = botKey;
+	options.form.text = choice;
+	issueRequest(options);
 }
 
 var orly = function(msg) {
-	
-	var headers = {
-		'Content-Type': 'application/json'
-	};
-
-	var options = {
-		url		: 'https://api.groupme.com/v3/bots/post',
-		method	: 'POST',
-		headers	: headers,
-		body : JSON.stringify({
-			"bot_id" : botKey,
-			"attachments" : [
-				{
-					"type" : "image",
-					"url" : "https://i.groupme.com/480x360.jpeg.028247499b06466893165608fa56363f"
-				}
-			]
-		})
-	}
-
-	request(options, function(error, response, body) {
-		if(error) {
-			console.log(error);
-		}
-		if(!error && response.statusCode == 200) {
-			console.log(body);
-		}
-	});
+		
+	var options = extend(true, {}, optionsTemplate);
+	delete options.form;
+	options.body = makeImageBody("", "https://i.groupme.com/480x360.jpeg.028247499b06466893165608fa56363f");
+	issueRequest(options);
 }
+
+
+var orlmente = function(msg) {
+		
+	var options = extend(true, {}, optionsTemplate);
+	delete options.form;
+	options.body = makeImageBody("", "https://i.groupme.com/470x470.jpeg.7eff61d68dd4462283005d37ad6c4c92");
+	issueRequest(options);
+}
+
 
 var karma = function(msg) {
 
@@ -647,86 +410,29 @@ var karma = function(msg) {
 	// but javascript lets me do it, so...
 	// ^ lol worst reasoning EVAR.
 	var sendMsg = function() {
-		var headers = {
-			'Content-Type': 'application/json'
-		};
-
-		var options = {
-			url		: 'https://api.groupme.com/v3/bots/post',
-			method	: 'POST',
-			headers	: headers,
-			body : JSON.stringify({
-				"bot_id" : botKey,
-				"text"	: obj + "'s karma has " + (inc > 0 ? "increased" : "decreased") + " to " + finalVal.toString(),
-			})
-		}
-
-		request(options, function(error, response, body) {
-			if(error) {
-				console.log(error);
-			}
-			if(!error && response.statusCode == 200) {
-				console.log(body);
-			}
-		});
+			
+		var options = extend(true, {}, optionsTemplate);
+		options.form.bot_id = botKey;
+		var finalText = obj + "'s karma has " + (inc > 0 ? "increased" : "decreased") + " to " + finalVal.toString();
+		options.form.text = finalText;
+		issueRequest(options);
 	}
 }
 
 var champ = function(msg) {
-	
-	var headers = {
-		'Content-Type': 'application/json'
-	};
-
-	var options = {
-		url		: 'https://api.groupme.com/v3/bots/post',
-		method	: 'POST',
-		headers	: headers,
-		body : JSON.stringify({
-			"bot_id" : botKey,
-			"text" : 'THAT QUESTION WILL BE ANSWERED THIS SUNDAY NIGHT...'
-		})
-	}
-
-	request(options, function(error, response, body) {
-		if(error) {
-			console.log(error);
-		}
-		if(!error && response.statusCode == 200) {
-			console.log(body);
-		}
-	});
+			
+	var options = extend(true, {}, optionsTemplate);
+	options.form.bot_id = botKey;
+	options.form.text = "THAT QUESTION WILL BE ANSWERED THIS SUNDAY NIGHT...";
+	issueRequest(options);
 }
 
 var drama = function(msg) {
 	
-	var headers = {
-		'Content-Type': 'application/json'
-	};
-
-	var options = {
-		url		: 'https://api.groupme.com/v3/bots/post',
-		method	: 'POST',
-		headers	: headers,
-		body : JSON.stringify({
-			"bot_id" : botKey,
-			"attachments" : [
-				{
-					"type" : "image",
-					"url" : "https://i.groupme.com/300x200.gif.66b5a6cbe2d44194858cf88cf6471963"
-				}
-			]
-		})
-	}
-
-	request(options, function(error, response, body) {
-		if(error) {
-			console.log(error);
-		}
-		if(!error && response.statusCode == 200) {
-			console.log(body);
-		}
-	});
+	var options = extend(true, {}, optionsTemplate);
+	delete options.form;
+	options.body = makeImageBody("", "https://i.groupme.com/300x200.gif.66b5a6cbe2d44194858cf88cf6471963");
+	issueRequest(options);	
 }
 
 var weather = function(msg) {
@@ -742,29 +448,11 @@ var weather = function(msg) {
 		var temp = data.current_observation.temp_f;
 		var feel = data.current_observation.feelslike_f;
 
-		// now for text output.  TAB CREEP LET'S GO
-
-		var headers = {
-			'Content-Type': 'application/json'
-		};
-
-		var options = {
-			url		: 'https://api.groupme.com/v3/bots/post',
-			method	: 'POST',
-			headers	: headers,
-			form: {
-				bot_id	: botKey,
-				text	: "It's " + temp.toString() + " degrees and " + weather + ". It feels like " + feel.toString() + ".  Also, I'm contractually obligated to tell you that this weather data comes from Weather Underground."
-			}
-		}
-
-		request(options, function(error, response, body) {
-			if(error) {
-				console.log(error);
-			}
-			if(!error && response.statusCode == 200) {
-				console.log(body);
-			}
-		});
+		var finalText = "It's " + temp.toString() + " degrees and " + weather + ". It feels like " + feel.toString() + ".  Also, I'm contractually obligated to tell you that this weather data comes from Weather Underground."
+		
+		var options = extend(true, {}, optionsTemplate);
+		options.form.bot_id = botKey;
+		options.form.text = finalText;
+		issueRequest(options);
 	});
 }
