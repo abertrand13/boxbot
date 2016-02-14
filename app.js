@@ -7,7 +7,6 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 var request = require('request');
 var pg = require('pg');
-var jquery = require('jquery');
 var extend = require('extend');
 
 app.set('port', (process.env.PORT || 3000));
