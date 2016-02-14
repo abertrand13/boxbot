@@ -99,6 +99,10 @@ app.post("/groupme", function(req, res) {
 					'func' : orlmente
 				},
 				{
+					'regex' : /.*[rR][eE][kK][tT].*/g,
+					'func' : rekt
+				},
+				{
 					'regex' : /.*([\S]+)((\+\+)|(--)).*/g,
 					'func' : karma
 				},
@@ -358,6 +362,14 @@ var orlmente = function(msg) {
 	var options = extend(true, {}, optionsTemplate);
 	delete options.form;
 	options.body = makeImageBody("", "https://i.groupme.com/470x470.jpeg.7eff61d68dd4462283005d37ad6c4c92");
+	issueRequest(options);
+}
+
+var rekt = function(msg) {
+	
+	var options = extend(true, {}, optionsTemplate);
+	delete options.form;
+	options.body = makeImageBody("", "https://i.groupme.com/400x225.gif.2581b2961bd24924acf371fb32d297e7");
 	issueRequest(options);
 }
 
