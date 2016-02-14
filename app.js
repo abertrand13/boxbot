@@ -107,6 +107,10 @@ app.post("/groupme", function(req, res) {
 					'func' : moonmoon
 				},
 				{
+					'regex' : /.*[oO]+[hH] [yY]+[eE]+[aA]+[hH]+.*/g,
+					'func' : ohyeah
+				},
+				{
 					'regex' : /.*([\S]+)((\+\+)|(--)).*/g,
 					'func' : karma
 				},
@@ -382,6 +386,14 @@ var moonmoon = function(msg) {
 	var options = extend(true, {}, optionsTemplate);
 	delete options.form;
 	options.body = makeImageBody("", "https://i.groupme.com/460x345.jpeg.bdcb09f23d5b404499acabc24d8db1b7");
+	issueRequest(options);
+}
+
+var ohyeah = function(msg) {
+		
+	var options = extend(true, {}, optionsTemplate);
+	delete options.form;
+	options.body = makeImageBody("OH YEAH!!", "https://i.groupme.com/335x230.gif.bc96351b0f474869b785795a3b54ce16");
 	issueRequest(options);
 }
 
