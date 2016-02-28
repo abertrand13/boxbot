@@ -310,7 +310,14 @@ var diningHall = function(msg) {
 	];
 	var rand = Math.floor(Math.random() * 7);
 
-	var choice = diningHalls[rand];
+	var date = new Date();
+	var day = date.getDay();
+	var choice;
+	if(day == 0) { // Sunday
+		choice = "Ricker, ya dumbass.";
+	} else {
+		var choice = diningHalls[rand];
+	}
 
 	var options = extend(true, {}, optionsTemplate);
 	options.form.bot_id = botKey;
