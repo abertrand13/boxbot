@@ -140,7 +140,8 @@ app.post("/groupme", function(req, res) {
 		}
 	}
 
-	res.send("Hello World!");
+	console.log(req.body);
+	res.send("Response finished");
 });
 
 app.listen(app.get('port'), function() {
