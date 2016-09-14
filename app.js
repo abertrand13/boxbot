@@ -31,116 +31,112 @@ app.post("/groupme", function(req, res) {
 	if(botKey && req.body.name != "boxbot") {
 
 		// duck typing.  probably from groupme
-		// check that boxbot was mentioned
 		var msg = req.body.text;
-		var re = /.*@boxbot.*/g;
 
-		if(re.test(msg)) { 
-			// define a map of filters and functionality
-			var functionalityMap = [
-				{
-					'regex' : /.*testing.*/g,
-					'func' : testing
-				},
-				{
-					'regex' : /.*introduce yourself.*/g,
-					'func' : intro
-				},
-				{
-					'regex' : /.*flip.*coin.*/g,
-					'func' : coinflip
-				},
-				{
-					'regex' : /.*derp(?![+-]).*/g,
-					'func' : derp
-				},
-				{
-					'regex' : /.*brendan(?![+-]).*/g,
-					'func' : brendan
-				},
-				{
-					'regex' : /.*[tT][rR][iI][pP][lL][eE](?![+-]).*/g,
-					'func' : triple
-				},
-				{
-					'regex' : /.*[bB][rR][oO][nN][tT][uU][sS](?![+-]).*/g,
-					'func' : goteem
-				},
-				{
-					'regex' : /.*[gG]+[oO]+[tT]+ [hH]*[eE]+[mM]+(?![+-]).*/g,
-					'func' : goteem
-				},
-				{
-					'regex' : /.*([jJ]+[oO]+[rR]+[dD]+[aA]+[nN]+)|([nN]+[eE]+[rR]+[dD]+)(?![+-]).*/g,
-					'func' : jordan
-				},
-				{
-					'regex' : /.*[jJ][eE][nN]+[aA]?[yY]+(?![+-]).*/g,
-					'func' : jenny
-				},
-				{
-					'regex' : /.*dining hall.*/g,
-					'func' : diningHall
-				},
-				{
-					'regex' : /.*odds 1 in (\d+).*/g,
-					'func' : odds
-				},
-				{
-					'regex' : /.*beer.*\?.*/g,
-					'func' : beer
-				},
-				{
-					'regex' : /.*[Oo] ?[rR][lL]+[yY].*/g,
-					'func' : orly
-				},
-				{
-					'regex' : /.*[oO] ?[rR][lL]+[mM][eE][nN][tT][eE].*/g,
-					'func' : orlmente
-				},
-				{
-					'regex' : /.*[rR][eE][kK][tT].*/g,
-					'func' : rekt
-				},
-				{
-					'regex' : /.*moon moon.*/g,
-					'func' : moonmoon
-				},
-				{
-					'regex' : /.*[oO]+[hH] [yY]+[eE]+[aA]+[hH]+.*/g,
-					'func' : ohyeah
-				},
-				{
-					'regex' : /.*([\S]+)((\+\+)|(--)).*/g,
-					'func' : karma
-				},
-				{
-					'regex' : /.*[wW][hH][oO] [iI][sS] [cC][hH][aA][mM][pP]\?*.*/g,
-					'func' : champ
-				},
-				{
-					'regex' : /.*[dD][rR][aA][mM][aA].*/g,
-					'func' : drama
-				},
-				{
-					'regex' : /.*weather.*/g,
-					'func' : weather
-				}
-			];
-
-			var exec = false;
-
-			for(var i = 0; i < functionalityMap.length; i++) {
-				var entry = functionalityMap[i];
-				if(entry.regex.test(msg)) {
-					exec = true;	
-					entry.func(msg);
-				}
+		// define a map of filters and functionality
+		var functionalityMap = [
+			{
+				'regex' : /.*testing.*/gi,
+				'func' : testing
+			},
+			{
+				'regex' : /.*introduce yourself.*/gi,
+				'func' : intro
+			},
+			{
+				'regex' : /.*flip.*coin.*/gi,
+				'func' : coinflip
+			},
+			{
+				'regex' : /.*derp(?![+-]).*/gi,
+				'func' : derp
+			},
+			{
+				'regex' : /.*brendan(?![+-]).*/gi,
+				'func' : brendan
+			},
+			{
+				'regex' : /.*triple(?![+-]).*/gi,
+				'func' : triple
+			},
+			{
+				'regex' : /.*brontus(?![+-]).*/gi,
+				'func' : goteem
+			},
+			{
+				'regex' : /.*[gG]+[oO]+[tT]+ [hH]*[eE]+[mM]+(?![+-]).*/g,
+				'func' : goteem
+			},
+			{
+				'regex' : /.*([jJ]+[oO]+[rR]+[dD]+[aA]+[nN]+)|([nN]+[eE]+[rR]+[dD]+)(?![+-]).*/g,
+				'func' : jordan
+			},
+			{
+				'regex' : /.*[jJ][eE][nN]+[aA]?[yY]+(?![+-]).*/g,
+				'func' : jenny
+			},
+			{
+				'regex' : /.*dining hall.*/gi,
+				'func' : diningHall
+			},
+			{
+				'regex' : /.*odds 1 in (\d+).*/gi,
+				'func' : odds
+			},
+			{
+				'regex' : /.*beer.*\?.*/gi,
+				'func' : beer
+			},
+			{
+				'regex' : /.*[Oo] ?[rR][lL]+[yY].*/g,
+				'func' : orly
+			},
+			{
+				'regex' : /.*[oO] ?[rR][lL]+[mM][eE][nN][tT][eE].*/g,
+				'func' : orlmente
+			},
+			{
+				'regex' : /.*[rR][eE][kK][tT].*/g,
+				'func' : rekt
+			},
+			{
+				'regex' : /.*moon moon.*/g,
+				'func' : moonmoon
+			},
+			{
+				'regex' : /.*[oO]+[hH] [yY]+[eE]+[aA]+[hH]+.*/g,
+				'func' : ohyeah
+			},
+			{
+				'regex' : /.*([\S]+)((\+\+)|(--)).*/g,
+				'func' : karma
+			},
+			{
+				'regex' : /.*[wW][hH][oO] [iI][sS] [cC][hH][aA][mM][pP]\?*.*/g,
+				'func' : champ
+			},
+			{
+				'regex' : /.*[dD][rR][aA][mM][aA].*/g,
+				'func' : drama
+			},
+			{
+				'regex' : /.*weather.*/g,
+				'func' : weather
 			}
+		];
 
-			if(!exec) {
-				defaultResponse(msg);
+		var exec = false;
+
+		for(var i = 0; i < functionalityMap.length; i++) {
+			var entry = functionalityMap[i];
+			if(entry.regex.test(msg)) {
+				exec = true;
+				entry.func(msg);
 			}
+		}
+
+		if(!exec) {
+			defaultResponse(msg);
 		}
 	}
 
