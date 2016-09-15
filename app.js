@@ -36,11 +36,11 @@ app.post("/groupme", function(req, res) {
 		// define a map of filters and functionality
 		var functionalityMap = [
 			{
-				'regex' : /.*testing.*/gi,
+				'regex' : /.*testing boxbot.*/gi,
 				'func' : testing
 			},
 			{
-				'regex' : /.*introduce yourself.*/gi,
+				'regex' : /.*boxbot.*introduce yourself.*/gi,
 				'func' : intro
 			},
 			{
@@ -125,18 +125,12 @@ app.post("/groupme", function(req, res) {
 			}
 		];
 
-		var exec = false;
-
 		for(var i = 0; i < functionalityMap.length; i++) {
 			var entry = functionalityMap[i];
 			if(entry.regex.test(msg)) {
 				exec = true;
 				entry.func(msg);
 			}
-		}
-
-		if(!exec) {
-			defaultResponse(msg);
 		}
 	}
 
