@@ -98,15 +98,15 @@ app.post("/groupme", function(req, res) {
 				'func' : orlmente
 			},
 			{
-				'regex' : /.*[rR][eE][kK][tT].*/g,
+				'regex' : /.*r+e+k+t+.*/gi,
 				'func' : rekt
 			},
 			{
-				'regex' : /.*moon moon.*/g,
+				'regex' : /.*moon moon.*/gi,
 				'func' : moonmoon
 			},
 			{
-				'regex' : /.*[oO]+[hH] [yY]+[eE]+[aA]+[hH]+.*/g,
+				'regex' : /.*o+h+ y+e+a+h+.*/gi,
 				'func' : ohyeah
 			},
 			{
@@ -114,27 +114,27 @@ app.post("/groupme", function(req, res) {
 				'func' : karma
 			},
 			{
-				'regex' : /.*best.*karma.*/g,
+				'regex' : /.*best.*karma.*/gi,
 				'func' : bestKarma
 			},
 			{
-				'regex' : /.*worst.*karma.*/g,
+				'regex' : /.*worst.*karma.*/gi,
 				'func' : worstKarma
 			},
 			{
-				'regex' : /.*[wW][hH][oO] [iI][sS] [cC][hH][aA][mM][pP]\?*.*/g,
+				'regex' : /.*who is champ\?*.*/gi,
 				'func' : champ
 			},
 			{
-				'regex' : /.*[dD][rR][aA][mM][aA].*/g,
+				'regex' : /.*drama.*/gi,
 				'func' : drama
 			},
 			{
-				'regex' : /.*weather.*/g,
+				'regex' : /.*weather.*/gi,
 				'func' : weather
 			},
 			{
-				'regex' : /.*n+e+r+d+.*/g,
+				'regex' : /.*n+e+r+d+.*/gi,
 				'func' : nerdAlert
 			}
 		];
