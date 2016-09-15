@@ -6,8 +6,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
 var request = require('request');
-var pg = require('pg');
 var extend = require('extend');
+
+var pg = require('pg');
+pg.defaults.ssl = true;
 
 app.set('port', (process.env.PORT || 3000));
 
@@ -110,6 +112,14 @@ app.post("/groupme", function(req, res) {
 			{
 				'regex' : /.*([\S]+)((\+\+)|(--)).*/g,
 				'func' : karma
+			},
+			{
+				'regex' : /.*best.*karma.*/g,
+				'func' : bestKarma
+			},
+			{
+				'regex' : /.*worst.*karma.*/g,
+				'func' : worstKarma
 			},
 			{
 				'regex' : /.*[wW][hH][oO] [iI][sS] [cC][hH][aA][mM][pP]\?*.*/g,
@@ -415,7 +425,7 @@ var karma = function(msg) {
 	var finalVal = inc; // assuming that we're going to have to create the row
 
 	// Connect to database
-	pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client) {
+	pg.connect(process.env.DATABASE_URL, function(err, client) {
 		if (err) {
 			throw err;
 		}
@@ -450,6 +460,49 @@ var karma = function(msg) {
 		options.form.text = finalText;
 		issueRequest(options);
 	}
+}
+
+var bestKarma = function(msg) {
+	pg.connect(process.env.DATABASE_URL, function(err, client) {
+		if(err) {
+			throw err;
+		}
+
+		var resultString = "BEST KARMAS! \n";
+		client.query("SELECT * FROM karma ORDER BY karma DESC LIMIT 10")
+			.on('row', function(row) {
+				resultString += row.name + ": " + row.karma + "\n";
+			})
+			.on('end', function() {
+				// send message
+				var options = extend(true, {}, optionsTemplate);
+				options.form.bot_id = botKey;
+				options.form.text = resultString;
+				issueRequest(options);
+			});
+	});
+}
+
+
+var worstKarma = function(msg) {
+	pg.connect(process.env.DATABASE_URL, function(err, client) {
+		if(err) {
+			throw err;
+		}
+
+		var resultString = "WORST KARMAS =( \n";
+		client.query("SELECT * FROM karma ORDER BY karma ASC LIMIT 10")
+			.on('row', function(row) {
+				resultString += row.name + ": " + row.karma + "\n";
+			})
+			.on('end', function() {
+				// send message
+				var options = extend(true, {}, optionsTemplate);
+				options.form.bot_id = botKey;
+				options.form.text = resultString;
+				issueRequest(options);
+			});
+	});
 }
 
 var champ = function(msg) {

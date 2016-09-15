@@ -9,7 +9,7 @@ $ git clone
 
 Direct test requests to localhost:5000/groupme
 
-## TODO
+## FEATURE TODO
 	- Useless (Drake and Josh gif)
 	- Nerd alert?
 	- Where is Triple
@@ -21,11 +21,15 @@ Direct test requests to localhost:5000/groupme
 	- Gainz
 	- Weather high/low
 	- Scheduler on my end
-	- Write regression tests?
 	- Karma top list
-	- hard code sunday ricker
-	- make it so you can work offline
 	- boxcash
 	- take a lap
 	- NOOOO (Darth Vader)
 	- Douchebag Jar (AI)
+
+## INFRASTRUCTURE TODO
+	- Set up local database for testing
+	- Fix server-breaking error throws (see karma routines)
+	- Write regression tests?
+	- make it so you can work offline
+	- Refactor - do I really need the extend(true, {}...) for example?
