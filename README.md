@@ -64,22 +64,19 @@ What follows are some example messages that will trigger an action by boxbot.  N
 
 ## FEATURE TODO
 	- Useless (Drake and Josh gif)
-	- Nerd alert?
 	- Where is Triple
 	- Hangover (?)
 	- DEFCON RED
 	- Order a pizza
-	- Go to sleep
+	- Go to sleep (req.body.created_at is UTC time of message send)
 	- Thinks he's tough
 	- Gainz
 	- Weather high/low
 	- Scheduler on my end
-	- Karma top list
 	- boxcash
 	- take a lap
 	- NOOOO (Darth Vader)
 	- Douchebag Jar (AI)
-	- Multiple regexes for same func
 
 ## INFRASTRUCTURE TODO
 	- Set up local database for testing
@@ -87,3 +84,6 @@ What follows are some example messages that will trigger an action by boxbot.  N
 	- Write regression tests?
 	- make it so you can work offline
 	- Refactor - do I really need the extend(true, {}...) for example?
+	- Multiple regexes for same func
+	- alphabetize regexes (or func names?)
+	- globalize regex defs

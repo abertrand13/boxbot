@@ -6,7 +6,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
 var request = require('request');
-var extend = require('extend');
+var extend = require('extend'); // port of jquery's extend for deep copy
 
 var pg = require('pg');
 pg.defaults.ssl = true;
@@ -70,7 +70,7 @@ app.post("/groupme", function(req, res) {
 				'func' : goteem
 			},
 			{
-				'regex' : /.*([jJ]+[oO]+[rR]+[dD]+[aA]+[nN]+)|([nN]+[eE]+[rR]+[dD]+)(?![+-]).*/g,
+				'regex' : /.*j+o+r+d+((a+n+)|(n+e+r+d+))(?![+-]).*/gi,
 				'func' : jordan
 			},
 			{
@@ -132,6 +132,10 @@ app.post("/groupme", function(req, res) {
 			{
 				'regex' : /.*weather.*/g,
 				'func' : weather
+			},
+			{
+				'regex' : /.*n+e+r+d+.*/g,
+				'func' : nerdAlert
 			}
 		];
 
@@ -345,17 +349,18 @@ var beer = function(msg) {
 		"Blue Moon",
 		"Sculpin",
 		"Natty Light",
-		"Sierra",
+		"Sierra Nevada",
 		"Pacifico",
 		"Modelo",
 		"Fat Tire",
 		"Lagunitas",
 		"The nearest IPA to your face.",
 		"Heineken",
-		"Shock Top"
+		"Shock Top",
+		"Flying Dog"
 	]
+	
 	var rand = Math.floor(Math.random() * beers.length);
-
 	var choice = beers[rand];
 
 	var options = extend(true, {}, optionsTemplate);
@@ -541,4 +546,11 @@ var weather = function(msg) {
 		options.form.text = finalText;
 		issueRequest(options);
 	});
+}
+
+var nerdAlert = function(msg) {	
+	var options = extend(true, {}, optionsTemplate);
+	delete options.form;
+	options.body = makeImageBody("NERD ALERT", "https://i.groupme.com/500x270.gif.a8a9a6cb422d4fd5b3ef8bc50803c0f5");
+	issueRequest(options);
 }
